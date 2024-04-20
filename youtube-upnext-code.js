@@ -90,6 +90,7 @@ const youtubeUpNext = {
       preview: 'Show widget preview',
       preferences: 'Edit preferences',
       background: 'Change background',
+      update: 'Update code',
       other: 'Other settings',
       exit: 'Exit settings menu',
     }
@@ -97,6 +98,7 @@ const youtubeUpNext = {
       menu.preview,
       menu.preferences,
       menu.background,
+      menu.update,
       menu.other,
       menu.exit,
     ]
@@ -111,6 +113,22 @@ const youtubeUpNext = {
     }
     if (response == menu.preferences) {
       return await this.editPreferences()
+    }
+
+    if (response == menu.update) {
+      if (
+        await this.generateAlert(
+          'Would you like to update the Weather Cal code? Your widgets will not be affected.',
+          ['Update', 'Exit'],
+        )
+      )
+        return
+      const success = await this.downloadCode(codeFilename, gitHubUrl)
+      return await this.generateAlert(
+        success
+          ? 'The update is now complete.'
+          : 'The update failed. Please try again later.',
+      )
     }
 
     if (response == menu.other) {
@@ -155,6 +173,24 @@ const youtubeUpNext = {
       }
     }
     return
+  },
+
+  // Download a Scriptable script.
+  async downloadCode(filename, url) {
+    try {
+      const codeString = await new Request(url).loadString()
+      if (codeString.indexOf('// Variables used by Scriptable.') < 0) {
+        return false
+      } else {
+        this.fm.writeString(
+          this.fm.joinPath(this.fm.documentsDirectory(), filename + '.js'),
+          codeString,
+        )
+        return true
+      }
+    } catch {
+      return false
+    }
   },
 
   // Edit preferences of the widget.
