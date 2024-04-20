@@ -5,7 +5,7 @@
 
 ~
 
-Welcome to Weather Cal. Run this script to set up your widget.
+Welcome to Youtube Up Next. Run this script to set up your widget.
 
 Add or remove items from the widget in the layout section below.
 
@@ -23,9 +23,9 @@ Happy scripting!
  * =====================================
  */
 
-// Names of Weather Cal elements.
+// Names of Youtube Up Next elements.
 const codeFilename = "youtube-upnext-code"
-const gitHubUrl = "https://raw.githubusercontent.com/mzeryck/Weather-Cal/main/weather-cal-code.js"
+const gitHubUrl = "https://raw.githubusercontent.com/walkyd12/youtube-upnext/main/youtube-upnext-code.js"
 
 // Determine if the user is using iCloud.
 let files = FileManager.local()
@@ -34,13 +34,13 @@ const iCloudInUse = files.isFileStoredIniCloud(module.filename)
 // If so, use an iCloud file manager.
 files = iCloudInUse ? FileManager.iCloud() : files
 
-// Determine if the Weather Cal code exists and download if needed.
+// Determine if the Youtube Up Next code exists and download if needed.
 const pathToCode = files.joinPath(files.documentsDirectory(), codeFilename + ".js")
-// if (!files.fileExists(pathToCode)) {
-//     const req = new Request(gitHubUrl)
-//     const codeString = await req.loadString()
-//     files.writeString(pathToCode, codeString)
-// }
+if (!files.fileExists(pathToCode)) {
+    const req = new Request(gitHubUrl)
+    const codeString = await req.loadString()
+    files.writeString(pathToCode, codeString)
+}
 
 // Import the code.
 if (iCloudInUse) { await files.downloadFileFromiCloud(pathToCode) }
@@ -59,7 +59,7 @@ if (config.runsInApp) {
     if (!preview) return
 }
 
-let channelParam = args && args.widgetParameter ? args.widgetParameter : "toshshow"
+let channelParam = args && args.widgetParameter ? args.widgetParameter : undefined
 
 // Set up the widget.
 let widget;
